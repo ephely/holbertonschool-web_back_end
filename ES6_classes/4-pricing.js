@@ -44,5 +44,5 @@ export default class Pricing {
       throw new TypeError('Both amount and conversionRate must be a number');
     }
     return amount * conversionRate;
-    }
+  }
 }
