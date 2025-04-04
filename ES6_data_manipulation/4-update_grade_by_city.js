@@ -5,7 +5,7 @@ export default function updateStudentGradeByCity(students, city, newGrade) {
       const grade = newGrade.find((grade) => grade.studentId === student.id);
       return {
         ...student,
-        grade: grade ? grade.grade : "N/A",
+        grade: grade ? grade.grade : 'N/A',
       };
     });
 }
