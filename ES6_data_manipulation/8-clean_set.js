@@ -1,15 +1,10 @@
 export default function cleanSet(set, startString) {
-  if (!(set instanceof Set)) {
-    throw new Error("The argument must be a Set");
-  }
-  if (!(startString instanceof String)) {
+  if (!startString || typeof startString !== "string" || startString === "") {
     return "";
   }
 
-  const tab = [...set]
+  return Array.from(set)
     .filter((value) => value.startsWith(startString))
     .map((value) => value.slice(startString.length))
     .join("-");
-
-  return tab;
 }
