@@ -5,10 +5,12 @@ and return values with the appropriate types
 """
 
 
-from typing import List, Tuple, Sized
+from typing import Iterable, Sequence, List, Tuple
 
 
-def element_length(lst: List[Sized]) -> List[Tuple[Sized, int]]:
+def element_length(
+    lst: Iterable[Sequence]
+) -> List[Tuple[Sequence, int]]:
     """
     Function element_length returns a list.
     """
