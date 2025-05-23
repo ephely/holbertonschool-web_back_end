@@ -1,57 +1,55 @@
 const express = require('express');
 const fs = require('fs');
+
 const app = express();
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, 'utf8', (err, data) => {
       if (err) {
-        reject(Error('Cannot load the database'));
+        reject(new Error('Cannot load the database'));
         return;
       }
 
       const lines = data.split('\n').filter((line) => line.trim() !== '');
-      const header = lines[0].split(',');
+      if (lines.length <= 1) {
+        resolve('Number of students: 0');
+        return;
+      }
+
       const students = lines.slice(1);
       const fields = {};
-
       students.forEach((line) => {
-        const parts = line.split(',');
-        const firstname = parts[0];
-        const field = parts[3];
-        if (!fields[field]) {
-          fields[field] = [];
-        }
-        fields[field].push(firstname);
+        const [firstName, , , field] = line.split(',');
+        fields[field] = fields[field] || [];
+        fields[field].push(firstName);
       });
 
       let output = `Number of students: ${students.length}\n`;
-      for (const field in fields) {
+      for (const [field, names] of Object.entries(fields)) {
         output += `Number of students in ${field}: ${
-          fields[field].length
-        }. List: ${fields[field].join(', ')}\n`;
+          names.length
+        }. List: ${names.join(', ')}\n`;
       }
-
       resolve(output.trim());
     });
   });
 }
 
-// Serveur Express
 app.get('/', (req, res) => {
-  res.set('Content-Type', 'text/plain');
-  res.send('Hello Holberton School!');
+  res.type('text').send('Hello Holberton School!');
 });
 
 app.get('/students', (req, res) => {
-  res.setHeader('Content-Type', 'text/plain');
-
-  res.write('This is the list of our students\n');
-  countStudents(process.argv[2])
-    .then((data) => res.end(data))
-    .catch((err) => res.end(err.message));
+  const dbPath = process.argv[2];
+  countStudents(dbPath)
+    .then((data) => {
+      res.type('text').send(`This is the list of our students\n${data}`);
+    })
+    .catch((err) => {
+      res.type('text').send(`This is the list of our students\n${err.message}`);
+    });
 });
 
 app.listen(1245);
-
 module.exports = app;
