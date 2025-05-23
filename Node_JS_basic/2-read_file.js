@@ -2,12 +2,12 @@ const fs = require('fs');
 
 function countStudents(path) {
   try {
-    const data = fs.readFileSync(path, 'utf8');
-    const lines = data.split('\n');
-    const CheckLines = lines.filter((line) => line.trim() !== '');
+    const data = fs.readFileSync(path, 'utf-8');
 
-    const header = CheckLines[0].split(',');
-    const students = CheckLines.slice(1);
+    const lines = data.split('\n');
+    const validLines = lines.filter((line) => line.trim() !== '');
+    const header = validLines[0].split(',');
+    const students = validLines.slice(1);
 
     const fields = {};
 
