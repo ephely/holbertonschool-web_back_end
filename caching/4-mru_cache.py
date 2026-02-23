@@ -34,3 +34,4 @@ class MRUCache(BaseCaching):
         value = self.cache_data.pop(key)
         self.cache_data[key] = value
         return value
+    
