@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ Encrypting passwords
 """
-
 import bcrypt
 
 
@@ -9,15 +8,11 @@ def hash_password(password: str) -> bytes:
     """
     Hashes a password with a salt using bcrypt
     """
-    password_bytes = password.encode("utf-8")
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password_bytes, salt)
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 def is_valid(hashed_password: bytes, password: str) -> bool:
     """
     Checks if a password matches a hashed password
     """
-    password_bytes = password.encode("utf-8")
-
-    return bcrypt.checkpw(password_bytes, hashed_password)
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
