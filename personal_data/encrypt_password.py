@@ -1,4 +1,6 @@
 import bcrypt
+""" Encrypting passwords
+"""
 
 def hash_password(password: str) -> bytes:
     """
