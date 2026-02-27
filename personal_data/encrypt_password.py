@@ -5,12 +5,10 @@
 import bcrypt
 
 
-def hash_password(password: str) -> bytes:
+def is_valid(hashed_password: bytes, password: str) -> bool:
     """
-    Hashes a password with a salt using bcrypt
+    Checks if a password matches a hashed password
     """
     password_bytes = password.encode("utf-8")
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password_bytes, salt)
 
-    return hashed_password
+    return bcrypt.checkpw(password_bytes, hashed_password)
