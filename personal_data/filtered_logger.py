@@ -63,3 +63,28 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         host=host,
         database=db_name
     )
+
+
+def main():
+    """
+    Main function to fetch users and log them filtered
+    """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    headers = [field[0] for field in cursor.description]
+
+    logger = get_logger()
+
+    for row in cursor:
+        info_concat = ""
+        for key, val in zip(headers, row):
+            info_concat += f"{key}={val}; "
+        logger.info(info_concat)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
