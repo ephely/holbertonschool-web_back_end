@@ -9,7 +9,7 @@ import json
 import os
 
 
-TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
+TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 DATA_DIR = os.path.dirname(os.path.abspath(__file__)) + "/../db"
 DATA = {}
 
