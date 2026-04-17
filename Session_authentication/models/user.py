@@ -41,11 +41,3 @@ class User(Base):
             return False
         import hashlib
         return self.password == hashlib.md5(pwd.encode()).hexdigest().lower() or self.password == pwd
-
-    def to_json(self, for_serialization: bool = False) -> dict:
-        """ Convert the object a JSON dictionary with password removal
-        """
-        user_dict = super().to_json(for_serialization)
-        if not for_serialization and 'password' in user_dict:
-            del user_dict['password']
-        return user_dict
