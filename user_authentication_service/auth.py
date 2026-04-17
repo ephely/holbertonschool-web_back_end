@@ -15,10 +15,10 @@ def _generate_uuid() -> str:
     return str(uuid.uuid4())
 
 
-def _hash_password(password: str) -> bytes:
+def _hash_password(password: str) -> str:
     """ Hash a password using bcrypt
     """
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return hashpw(password.encode('utf-8'), gensalt())
 
 
 class Auth:
