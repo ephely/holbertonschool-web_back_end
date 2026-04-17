@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""
+Route module for the API
+"""
 from flask import Flask, jsonify, request, abort, make_response, redirect
 from auth import Auth
 
