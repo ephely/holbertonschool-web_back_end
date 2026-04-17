@@ -2,6 +2,7 @@
 """
 Auth module
 """
+
 import bcrypt
 import uuid
 from db import DB
@@ -15,11 +16,11 @@ def _generate_uuid() -> str:
     return str(uuid.uuid4())
 
 
-def _hash_password(password: str) -> str:
-    """ Hash a password using bcrypt
+def _hash_password(password: str) -> bytes:
+    """Hash a password string using bcrypt with a generated salt.
     """
-    return hashpw(password.encode('utf-8'), gensalt())
-
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode("utf-8"), salt)
 
 class Auth:
     """ Auth class to interact with the authentication database
