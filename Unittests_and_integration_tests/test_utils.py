@@ -4,8 +4,8 @@ Unit tests for utils.access_nested_map
 """
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map, get_json
-from unittest.mock import patch
+from utils import access_nested_map, get_json, memoize
+from unittest.mock import patch, Mock
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -51,3 +51,26 @@ class TestAccessNestedMap(unittest.TestCase):
                 self.assertEqual(str(cm.exception), test_url)
                 
                 self.assertEqual(result, test_payload)
+        
+    class TestMemoize(unittest.TestCase):
+        """ Tests for memoize decorator """
+        def test_memoize(self):
+            """ Test that memoization works as expected """
+            
+            class TestClass:
+                def a_method(self):
+                    return 42
+                @memoize
+                def a_property(self):
+                    return self.a_method()
+            # Patch the a_method method of TestClass
+            with patch.object(TestClass, 'a_method', return_value=42) as mock_method:
+                obj = TestClass()
+                
+                result1 = obj.a_property
+                result2 = obj.a_property
+                
+                self.assertEqual(result1, 42)
+                self.assertEqual(result2, 42)
+                mock_method.assert_called_once()
+
