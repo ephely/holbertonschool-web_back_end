@@ -11,6 +11,10 @@ class Config:
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
+app = Flask(__name__)
+app.config.from_object(Config)
+babel = Babel()
+
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
@@ -29,18 +33,19 @@ def get_locale():
     locale = request.args.get('locale')
     if locale in app.config['LANGUAGES']:
         return locale
-    if request.user and request.user.get('locale') in app.config['LANGUAGES']:
-        return request.user.get('locale')
     if g.user and g.user.get('locale') in app.config['LANGUAGES']:
         return g.user.get('locale')
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    header_locale = request.accept_languages.best_match(app.config['LANGUAGES'])
+    if header_locale:
+        return header_locale
+    return app.config['BABEL_DEFAULT_LOCALE']['LANGUAGES']
 
 
 def get_user():
     """ Retrieve user from mock database """
     login_as = request.args.get('login_as')
     if login_as:
-        return users.get(int(login_as))
+            return users.get(int(login_as))
     return None
 
 
