@@ -42,6 +42,7 @@ def get_user():
 
 @app.before_request
 def before_request():
+    """ Detect user before request """
     g.user = get_user()
 
 
