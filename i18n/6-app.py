@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Force locale with URL parameter """
+""" Use user locale """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 
@@ -23,9 +23,21 @@ users = {
 }
 
 
-app = Flask(__name__)
-app.config.from_object(Config)
-babel = Babel()
+def get_user():
+    """ Retrieve user from mock database """
+    login_as = request.args.get('login_as')
+    if login_as:
+        try:
+            return users.get(int(login_as))
+        except (ValueError, TypeError):
+            return None
+    return None
+
+
+@app.before_request
+def before_request():
+    """ Detect user before request """
+    g.user = get_user()
 
 
 def get_locale():
@@ -35,24 +47,12 @@ def get_locale():
         return locale
     if g.user and g.user.get('locale') in app.config['LANGUAGES']:
         return g.user.get('locale')
-    header_locale = request.accept_languages.best_match(app.config['LANGUAGES'])
+    header_locale = request.accept_languages.best_match(
+        app.config['LANGUAGES']
+    )
     if header_locale:
         return header_locale
-    return app.config['BABEL_DEFAULT_LOCALE']['LANGUAGES']
-
-
-def get_user():
-    """ Retrieve user from mock database """
-    login_as = request.args.get('login_as')
-    if login_as:
-            return users.get(int(login_as))
-    return None
-
-
-@app.before_request
-def before_request():
-    """ Detect user before request """
-    g.user = get_user()
+    return app.config['BABEL_DEFAULT_LOCALE']
 
 
 babel.init_app(app, locale_selector=get_locale)
