@@ -2,24 +2,32 @@
 """
 Basic Cache class
 """
-
 import redis
 import uuid
 from typing import Union, Callable, Optional
+from functools import wraps
 
+def count_calls(method: Callable) -> Callable:
+    """Decorator to count how many times a method is called"""
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """Wrapper function"""
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+    return wrapper
 
 class Cache:
     """Cache class using Redis"""
-
     def __init__(self):
         """Initialize Redis client and flush database"""
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Store data in Redis using a random key
-
         Returns:
             The generated key as a string
         """
@@ -32,7 +40,6 @@ class Cache:
     ) -> Union[str, bytes, int, float, None]:
         """
         Get data from Redis and recover original type
-
         Returns:
             The data in original type, or None if key does not exist
         """
@@ -48,7 +55,6 @@ class Cache:
         Get data from Redis and return as a string
         """
         return self.get(key, fn=lambda d: d.decode("utf-8"))
-
     def get_int(self, key: str) -> Optional[int]:
         """
         Get data from Redis and return as an int
